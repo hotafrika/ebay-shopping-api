@@ -2,6 +2,7 @@ package shopping
 
 import (
 	"encoding/xml"
+	"fmt"
 	"strings"
 )
 
@@ -155,6 +156,48 @@ func (r *FindProductsRequest) WithQueryKeywords(query string) *FindProductsReque
 func (r *FindProductsRequest) WithSortOrder(sortBy SortOrderOption) *FindProductsRequest {
 	r.SortOrder = string(sortBy)
 	return r
+}
+
+// GetPage executes FindProductsRequest for page #
+// Valid pages # 1 - 10000+
+func (r *FindProductsRequest) GetPage(page int) (FindProductsResponse, error) {
+	if page < 1 {
+		page = 1
+	}
+	r.WithPageNumber(page)
+	body, err := r.getBody()
+	if err != nil {
+		return FindProductsResponse{}, fmt.Errorf("unable to serialize req body: %w", err)
+	}
+	// TODO check content type
+	res, err := r.Client.R().SetBody(body).Post(r.URL)
+	if err != nil {
+		return FindProductsResponse{}, fmt.Errorf("sending req: %w", err)
+	}
+	if res.StatusCode() != 200 {
+		return FindProductsResponse{}, fmt.Errorf("status code %d: %s", res.StatusCode(), res.String())
+	}
+	ar := FindProductsResponse{}
+	err = xml.Unmarshal(res.Body(), &ar)
+	fmt.Println(string(res.Body()))
+	if err != nil {
+		return FindProductsResponse{}, fmt.Errorf("parsing response body: %w", err)
+	}
+	return ar, nil
+}
+
+// Execute executes FindProductsRequest for the first page
+func (r *FindProductsRequest) Execute() (FindProductsResponse, error) {
+	return r.GetPage(1)
+}
+
+// GetBody return FindProductsRequest body as JSON
+func (r *FindProductsRequest) GetBody() ([]byte, error) {
+	return xml.MarshalIndent(r, "", "  ")
+}
+
+func (r *FindProductsRequest) getBody() ([]byte, error) {
+	return xml.Marshal(r)
 }
 
 /*
