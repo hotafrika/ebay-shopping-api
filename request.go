@@ -1,5 +1,10 @@
 package shopping
 
+import (
+	"encoding/xml"
+	"strings"
+)
+
 // FindProductsRequest represents eBay FindProducts call request
 //
 // See more: https://developer.ebay.com/Devzone/shopping/docs/CallRef/FindProducts.html#Input
@@ -163,8 +168,9 @@ func (r *FindProductsRequest) WithSortOrder(sortBy SortOrderOption) *FindProduct
 type GetCategoryInfoRequest struct {
 	RequestBasic
 	RequestStandard
-	CategoryID      string `xml:"CategoryID,omitempty"`
-	IncludeSelector string `xml:"IncludeSelector,omitempty"`
+	CategoryID         string              `xml:"CategoryID,omitempty"`
+	IncludeSelectorMap map[string]struct{} `xml:"-"`
+	IncludeSelector    string              `xml:"IncludeSelector,omitempty"`
 }
 
 // WithCategoryID adds categoryID to GetCategoryInfoRequest
@@ -185,8 +191,18 @@ func (r *GetCategoryInfoRequest) WithCategoryID(categoryID string) *GetCategoryI
 // This field is included and its value is set to ChildCategories if the user wishes to retrieve all of
 // the specified category's children categories (one category level down in eBay categorical hierarchy).
 // If the specified category is a leaf category (and has no children), this filter has no effect on the output.
-func (r *GetCategoryInfoRequest) WithIncludeSelector(selector IncludeSelectorGCIOption) *GetCategoryInfoRequest {
-	r.IncludeSelector = string(selector)
+func (r *GetCategoryInfoRequest) WithIncludeSelector(selectors ...IncludeSelectorGCIOption) *GetCategoryInfoRequest {
+	if len(r.IncludeSelectorMap) == 0 {
+		r.IncludeSelectorMap = make(map[string]struct{})
+	}
+	for _, s := range selectors {
+		r.IncludeSelectorMap[string(s)] = struct{}{}
+	}
+	var is []string
+	for k := range r.IncludeSelectorMap {
+		is = append(is, k)
+	}
+	r.IncludeSelector = strings.Join(is, ",")
 	return r
 }
 
@@ -196,50 +212,230 @@ func (r *GetCategoryInfoRequest) WithIncludeSelector(selector IncludeSelectorGCI
 
 type GeteBayTimeRequest struct {
 	RequestBasic
-	// TODO
 }
 
 /*
 ===================================================
 */
 
+// GetItemStatusRequest can be used by sellers and buyers who want to know the current status of any eBay listing.
+// All retrieved listings will show listing status, fixed price (or highest bid price for auctions),
+// and scheduled end time of listing.
 type GetItemStatusRequest struct {
 	RequestBasic
-	// TODO
+	ItemIDMap map[string]struct{} `xml:"-"`
+	ItemIDs   []string            `xml:"ItemID,omitempty"`
+}
+
+// WithItemID adds items IDs to request
+// The unique identifier of the eBay listing to retrieve. You can retrieve the status of up to 20 listings per call,
+// and a separate ItemID field is required for each listing.
+func (r *GetItemStatusRequest) WithItemID(itemIDs ...string) *GetItemStatusRequest {
+	if len(r.ItemIDMap) == 0 {
+		r.ItemIDMap = make(map[string]struct{})
+	}
+	for _, id := range itemIDs {
+		r.ItemIDMap[id] = struct{}{}
+	}
+	var ids []string
+	for k := range r.ItemIDMap {
+		ids = append(ids, k)
+	}
+	r.ItemIDs = ids
+	return r
 }
 
 /*
 ===================================================
 */
 
+// GetMultipleItemsRequest retrieve much of the information that is visible on a listing's
+// View Item page on the eBay site, such as title and prices.
 type GetMultipleItemsRequest struct {
 	RequestBasic
-	// TODO
+	IncludeSelectorMap map[string]struct{} `xml:"-"`
+	IncludeSelector    string              `xml:"IncludeSelector,omitempty"`
+	ItemIDs            []string            `xml:"ItemID,omitempty"`
+}
+
+// WithIncludeSelector adds selector options to request
+func (r *GetMultipleItemsRequest) WithIncludeSelector(selectors ...IncludeSelectorGMIOption) *GetMultipleItemsRequest {
+	if len(r.IncludeSelectorMap) == 0 {
+		r.IncludeSelectorMap = make(map[string]struct{})
+	}
+	for _, s := range selectors {
+		r.IncludeSelectorMap[string(s)] = struct{}{}
+	}
+	var is []string
+	for k := range r.IncludeSelectorMap {
+		is = append(is, k)
+	}
+	r.IncludeSelector = strings.Join(is, ",")
+	return r
+}
+
+// WithItemID adds items IDs to request
+// The uniqe ID that identifies the listing for which to retrieve the data.
+// You can provide a maximum of 20 ItemID values.
+// Max length: 19 (Note: The eBay database specifies 38. Currently, Item IDs are usually 9 to 12 digits).
+func (r *GetMultipleItemsRequest) WithItemID(itemIDs ...string) *GetMultipleItemsRequest {
+	r.ItemIDs = append(r.ItemIDs, itemIDs...)
+	return r
 }
 
 /*
 ===================================================
 */
 
+// GetShippingCostsRequest is used to retrieve the estimated shipping cost to ship an active item
+// to a specified destination country and postal code. Any user can make this call on an active
+// listing (does not have to be the seller or buyer/bidder).
+// It pertains to all shipping types, including flat-rate and calculated.
 type GetShippingCostsRequest struct {
 	RequestBasic
-	// TODO
+	// DestinationCountryCode from https://developer.ebay.com/Devzone/shopping/docs/CallRef/types/CountryCodeType.html
+	DestinationCountryCode string `xml:"DestinationCountryCode,omitempty"`
+	DestinationPostalCode  string `xml:"DestinationPostalCode,omitempty"`
+	IncludeDetails         bool   `xml:"IncludeDetails,omitempty"`
+	ItemID                 string `xml:"ItemID"`
+	QuantitySold           int    `xml:"QuantitySold,omitempty"`
+}
+
+// WithDestinationCountryCode adds code from
+// Destination country code. If DestinationCountryCode is US, postal code is required and represents US zip code.
+// https://developer.ebay.com/Devzone/shopping/docs/CallRef/types/CountryCodeType.html
+func (r *GetShippingCostsRequest) WithDestinationCountryCode(code string) *GetShippingCostsRequest {
+	r.DestinationCountryCode = code
+	return r
+}
+
+// WithDestinationPostalCode adds postal code
+// Destination country postal code (or zip code, for US). Ignored if no country code is provided.
+func (r *GetShippingCostsRequest) WithDestinationPostalCode(code string) *GetShippingCostsRequest {
+	r.DestinationPostalCode = code
+	return r
+}
+
+// WithIncludeDetails allows the user to return  the ShippingDetails in the response.
+func (r *GetShippingCostsRequest) WithIncludeDetails(includeDetails bool) *GetShippingCostsRequest {
+	r.IncludeDetails = includeDetails
+	return r
+}
+
+// WithItemID adds itemID to request
+// The item ID that uniquely identifies the listing for which to retrieve the data.
+// Max length: 19 (Note: The eBay database specifies 38. Currently, Item IDs are usually 9 to 12 digits).
+func (r *GetShippingCostsRequest) WithItemID(itemID string) *GetShippingCostsRequest {
+	r.ItemID = itemID
+	return r
+}
+
+// WithQuantitySold adds QuantitySold to request
+// Quantity of items sold to a single buyer and to be shipped together.
+func (r *GetShippingCostsRequest) WithQuantitySold(sold int) *GetShippingCostsRequest {
+	r.QuantitySold = sold
+	return r
 }
 
 /*
 ===================================================
 */
 
+// GetSingleItemRequest retrieves publicly visible details about one listing on eBay.
+// This gives you most of the data that eBay shows to the general public on the
+// View Item page (title, description, basic price information, and other details).
 type GetSingleItemRequest struct {
 	RequestBasic
-	// TODO
+	IncludeSelector    string              `xml:"IncludeSelector,omitempty"`
+	IncludeSelectorMap map[string]struct{} `xml:"-"`
+	ItemID             string              `xml:"ItemID"`
+	VariationSKU       string              `xml:"VariationSKU,omitempty"`
+	VariationSpecifics []NameValueListType `xml:"VariationSpecifics,omitempty"`
+}
+
+// NameValueListType  is an array of Item Specifics name-value pairs for an eBay Catalog product
+// (if FindProducts is used) or Item Specifics name-value pairs for a single-variation listing or individual
+// variation within a multiple-variation listing (if GetSingleItem or GetMultipleItems is used).
+type NameValueListType struct {
+	Empty  xml.Name `xml:"NameValueList"`
+	Name   string   `xml:"Name,omitempty"`
+	Values []string `xml:"Value,omitempty"`
+}
+
+// WithIncludeSelector adds selector options to request
+func (r *GetSingleItemRequest) WithIncludeSelector(selectors ...IncludeSelectorGSIOption) *GetSingleItemRequest {
+	if len(r.IncludeSelectorMap) == 0 {
+		r.IncludeSelectorMap = make(map[string]struct{})
+	}
+	for _, s := range selectors {
+		r.IncludeSelectorMap[string(s)] = struct{}{}
+	}
+	var is []string
+	for k := range r.IncludeSelectorMap {
+		is = append(is, k)
+	}
+	r.IncludeSelector = strings.Join(is, ",")
+	return r
+}
+
+// WithItemID adds itemID to request
+// The item ID that uniquely identifies the listing for which to retrieve the data.
+// Max length: 19 (Note: The eBay database specifies 38. Currently, Item IDs are usually 9 to 12 digits).
+func (r *GetSingleItemRequest) WithItemID(itemID string) *GetSingleItemRequest {
+	r.ItemID = itemID
+	return r
+}
+
+// WithVariationSKU adds VariationSKU to request
+// Variation-level SKU that uniquely identifies a variation within the listing identified by ItemID.
+// Only applicable when the seller included variation-level SKU (Variation.SKU) values.
+// Retrieves all the usual listing fields, but limits the variations content to the specified variation.
+// If not specified, the response includes all variations.
+func (r *GetSingleItemRequest) WithVariationSKU(variationSKU string) *GetSingleItemRequest {
+	r.VariationSKU = variationSKU
+	return r
+}
+
+// WithVariationSpecifics adds additional Item Specific name-value pairs
+func (r *GetSingleItemRequest) WithVariationSpecifics(name string, values ...string) *GetSingleItemRequest {
+	r.VariationSpecifics = append(r.VariationSpecifics, NameValueListType{
+		Name:   name,
+		Values: values,
+	})
+	return r
 }
 
 /*
 ===================================================
 */
 
+// GetUserProfileRequest ...
 type GetUserProfileRequest struct {
 	RequestBasic
-	// TODO
+	IncludeSelector    string              `xml:"IncludeSelector,omitempty"`
+	IncludeSelectorMap map[string]struct{} `xml:"-"`
+	UserID             string              `xml:"UserID"`
+}
+
+// WithIncludeSelector adds selector options to request
+func (r *GetUserProfileRequest) WithIncludeSelector(selectors ...IncludeSelectorGUPOption) *GetUserProfileRequest {
+	if len(r.IncludeSelectorMap) == 0 {
+		r.IncludeSelectorMap = make(map[string]struct{})
+	}
+	for _, s := range selectors {
+		r.IncludeSelectorMap[string(s)] = struct{}{}
+	}
+	var is []string
+	for k := range r.IncludeSelectorMap {
+		is = append(is, k)
+	}
+	r.IncludeSelector = strings.Join(is, ",")
+	return r
+}
+
+// WithUserID adds userID to request
+// An eBay user ID is input into this field to retrieve information about that eBay user.
+func (r *GetUserProfileRequest) WithUserID(userID string) *GetUserProfileRequest {
+	r.UserID = userID
+	return r
 }

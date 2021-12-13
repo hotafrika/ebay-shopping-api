@@ -106,3 +106,33 @@ type IncludeSelectorGCIOption string
 const (
 	IncludeSelectorChildCategories IncludeSelectorGCIOption = "ChildCategories"
 )
+
+type IncludeSelectorGMIOption string
+
+const (
+	IncludeSelectorMIDetails         IncludeSelectorGMIOption = "Details"
+	IncludeSelectorMIDescription     IncludeSelectorGMIOption = "Description"
+	IncludeSelectorMITextDescription IncludeSelectorGMIOption = "TextDescription"
+	IncludeSelectorMIItemSpecifics   IncludeSelectorGMIOption = "ItemSpecifics"
+	IncludeSelectorMIVariations      IncludeSelectorGMIOption = "Variations"
+)
+
+type IncludeSelectorGSIOption string
+
+const (
+	IncludeSelectorSIDetails           IncludeSelectorGSIOption = "Details"
+	IncludeSelectorSIDescription       IncludeSelectorGSIOption = "Description"
+	IncludeSelectorSITextDescription   IncludeSelectorGSIOption = "TextDescription"
+	IncludeSelectorSITextShippingCosts IncludeSelectorGSIOption = "ShippingCosts"
+	IncludeSelectorSITextItemSpecifics IncludeSelectorGSIOption = "ItemSpecifics"
+	IncludeSelectorSITextVariations    IncludeSelectorGSIOption = "Variations"
+	IncludeSelectorSITextCompatibility IncludeSelectorGSIOption = "Compatibility"
+)
+
+type IncludeSelectorGUPOption string
+
+const (
+	IncludeSelectorUPDetails         IncludeSelectorGUPOption = "Details"
+	IncludeSelectorUPFeedbackDetails IncludeSelectorGUPOption = "FeedbackDetails"
+	IncludeSelectorUPFeedbackHistory IncludeSelectorGUPOption = "FeedbackHistory"
+)
