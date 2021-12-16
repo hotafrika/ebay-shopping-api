@@ -87,7 +87,7 @@ func (r *FindProductsRequest) WithMaxEntries(limit int) *FindProductsRequest {
 // ProductID ...
 //
 // Use this field to find a catalog product (or products) associated with an
-// eBay Product ID (ePID) or a Global Trade Item Number (GTIN), such as a UPC, ISBN, or EAN.
+// eBay Product ID (ePID) or a Global Trade StatusItem Number (GTIN), such as a UPC, ISBN, or EAN.
 // The product identifier is expressed as a string value, and the type of product identifier
 // is expressed in the type attribute.
 type ProductID struct {
@@ -98,7 +98,7 @@ type ProductID struct {
 // WithProductID adds ProductID to request
 //
 // Use this field to find a catalog product (or products) associated with an
-// eBay Product ID (ePID) or a Global Trade Item Number (GTIN), such as a UPC, ISBN, or EAN.
+// eBay Product ID (ePID) or a Global Trade StatusItem Number (GTIN), such as a UPC, ISBN, or EAN.
 // The product identifier is expressed as a string value, and the type of product identifier
 // is expressed in the type attribute.
 func (r *FindProductsRequest) WithProductID(productIDCodeType ProductIDCodeTypeOption, productID string) *FindProductsRequest {
@@ -127,7 +127,7 @@ func (r *FindProductsRequest) WithProductSort(sortBy ProductSortOption) *FindPro
 
 // WithQueryKeywords is used to defined a query string using one or more keywords. When you use
 // a keyword search, eBay searches the product catalog for matching words in the product title,
-// description, and/or Item Specifics, and it returns a list of matching catalog products.
+// description, and/or StatusItem Specifics, and it returns a list of matching catalog products.
 //
 // The query string must contain at least three alphanumeric characters.
 // The words "and" and "or" are treated like any other word. Only use "and", "or", or "the" if you
@@ -293,7 +293,7 @@ func (r *GetItemStatusRequest) WithItemID(itemIDs ...string) *GetItemStatusReque
 */
 
 // GetMultipleItemsRequest retrieve much of the information that is visible on a listing's
-// View Item page on the eBay site, such as title and prices.
+// View StatusItem page on the eBay site, such as title and prices.
 type GetMultipleItemsRequest struct {
 	RequestBasic
 	IncludeSelectorMap map[string]struct{} `xml:"-"`
@@ -320,7 +320,7 @@ func (r *GetMultipleItemsRequest) WithIncludeSelector(selectors ...IncludeSelect
 // WithItemID adds items IDs to request
 // The uniqe ID that identifies the listing for which to retrieve the data.
 // You can provide a maximum of 20 ItemID values.
-// Max length: 19 (Note: The eBay database specifies 38. Currently, Item IDs are usually 9 to 12 digits).
+// Max length: 19 (Note: The eBay database specifies 38. Currently, StatusItem IDs are usually 9 to 12 digits).
 func (r *GetMultipleItemsRequest) WithItemID(itemIDs ...string) *GetMultipleItemsRequest {
 	r.ItemIDs = append(r.ItemIDs, itemIDs...)
 	return r
@@ -367,7 +367,7 @@ func (r *GetShippingCostsRequest) WithIncludeDetails(includeDetails bool) *GetSh
 
 // WithItemID adds itemID to request
 // The item ID that uniquely identifies the listing for which to retrieve the data.
-// Max length: 19 (Note: The eBay database specifies 38. Currently, Item IDs are usually 9 to 12 digits).
+// Max length: 19 (Note: The eBay database specifies 38. Currently, StatusItem IDs are usually 9 to 12 digits).
 func (r *GetShippingCostsRequest) WithItemID(itemID string) *GetShippingCostsRequest {
 	r.ItemID = itemID
 	return r
@@ -386,7 +386,7 @@ func (r *GetShippingCostsRequest) WithQuantitySold(sold int) *GetShippingCostsRe
 
 // GetSingleItemRequest retrieves publicly visible details about one listing on eBay.
 // This gives you most of the data that eBay shows to the general public on the
-// View Item page (title, description, basic price information, and other details).
+// View StatusItem page (title, description, basic price information, and other details).
 type GetSingleItemRequest struct {
 	RequestBasic
 	IncludeSelector    string              `xml:"IncludeSelector,omitempty"`
@@ -396,8 +396,8 @@ type GetSingleItemRequest struct {
 	VariationSpecifics []NameValueListType `xml:"VariationSpecifics,omitempty"`
 }
 
-// NameValueListType  is an array of Item Specifics name-value pairs for an eBay Catalog product
-// (if FindProducts is used) or Item Specifics name-value pairs for a single-variation listing or individual
+// NameValueListType  is an array of StatusItem Specifics name-value pairs for an eBay Catalog product
+// (if FindProducts is used) or StatusItem Specifics name-value pairs for a single-variation listing or individual
 // variation within a multiple-variation listing (if GetSingleItem or GetMultipleItems is used).
 type NameValueListType struct {
 	Empty  xml.Name `xml:"NameValueList"`
@@ -423,7 +423,7 @@ func (r *GetSingleItemRequest) WithIncludeSelector(selectors ...IncludeSelectorG
 
 // WithItemID adds itemID to request
 // The item ID that uniquely identifies the listing for which to retrieve the data.
-// Max length: 19 (Note: The eBay database specifies 38. Currently, Item IDs are usually 9 to 12 digits).
+// Max length: 19 (Note: The eBay database specifies 38. Currently, StatusItem IDs are usually 9 to 12 digits).
 func (r *GetSingleItemRequest) WithItemID(itemID string) *GetSingleItemRequest {
 	r.ItemID = itemID
 	return r
@@ -439,7 +439,7 @@ func (r *GetSingleItemRequest) WithVariationSKU(variationSKU string) *GetSingleI
 	return r
 }
 
-// WithVariationSpecifics adds additional Item Specific name-value pairs
+// WithVariationSpecifics adds additional StatusItem Specific name-value pairs
 func (r *GetSingleItemRequest) WithVariationSpecifics(name string, values ...string) *GetSingleItemRequest {
 	r.VariationSpecifics = append(r.VariationSpecifics, NameValueListType{
 		Name:   name,
