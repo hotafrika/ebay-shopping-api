@@ -1,5 +1,7 @@
 package shopping
 
+import "encoding/xml"
+
 // FindProductsResponse is response for FindProductsRequest
 type FindProductsResponse struct {
 	responseStandard
@@ -31,6 +33,7 @@ type Product struct {
 // or StatusItem Specifics name-value pairs for a single-variation listing or individual variation within
 // a multiple-variation listing (if GetSingleItem or GetMultipleItems is used).
 type NameValueList struct {
+	Empty  xml.Name `xml:"NameValueList"`
 	Name   string   `xml:"Name"`
 	Values []string `xml:"Value"`
 }
@@ -112,8 +115,248 @@ type BasicUser struct {
 ===========================================================
 */
 
+// GetMultipleItemsResponse is a response for GetMultipleItemsRequest
 type GetMultipleItemsResponse struct {
 	responseStandard
+	Items []Item `xml:"Item"`
+}
+
+// Item contains details about the listing whose ID was specified in the request.
+type Item struct {
+	AutoPay                             bool                    `xml:"AutoPay"`
+	AvailableForPickupDropOff           bool                    `xml:"AvailableForPickupDropOff"`
+	BestOfferEnabled                    bool                    `xml:"BestOfferEnabled"`
+	BuyItNowAvailable                   bool                    `xml:"BuyItNowAvailable"`
+	EligibleForPickupDropOff            bool                    `xml:"EligibleForPickupDropOff"`
+	GlobalShipping                      bool                    `xml:"GlobalShipping"`
+	IgnoreQuantity                      bool                    `xml:"IgnoreQuantity"`
+	IntegratedMerchantCreditCardEnabled bool                    `xml:"IntegratedMerchantCreditCardEnabled"`
+	BidCount                            int                     `xml:"BidCount"`
+	BusinessSellerDetails               BusinessSellerDetails   `xml:"BusinessSellerDetails"`
+	BuyItNowPrice                       Price                   `xml:"BuyItNowPrice"`
+	Charity                             Charity                 `xml:"Charity"`
+	ConditionDescription                string                  `xml:"ConditionDescription"`
+	ConditionDisplayName                string                  `xml:"ConditionDisplayName"`
+	ConditionID                         int                     `xml:"ConditionID"`
+	ConvertedBuyItNowPrice              Price                   `xml:"ConvertedBuyItNowPrice"`
+	ConvertedCurrentPrice               Price                   `xml:"ConvertedCurrentPrice"`
+	Country                             string                  `xml:"Country"`
+	CurrentPrice                        Price                   `xml:"CurrentPrice"`
+	Description                         string                  `xml:"Description"`
+	DiscountPriceInfo                   DiscountPriceInfo       `xml:"DiscountPriceInfo"`
+	EndTime                             string                  `xml:"EndTime"`
+	ExcludeShipToLocations              []string                `xml:"ExcludeShipToLocation"`
+	GalleryURL                          string                  `xml:"GalleryURL"`
+	HandlingTime                        int                     `xml:"HandlingTime"`
+	HighBidder                          User                    `xml:"HighBidder"`
+	HitCount                            int64                   `xml:"HitCount"`
+	ItemID                              string                  `xml:"ItemID"`
+	ItemSpecifics                       []NameValueList         `xml:"ItemSpecifics"`
+	ListingStatus                       string                  `xml:"ListingStatus"`
+	ListingType                         string                  `xml:"ListingType"`
+	Location                            string                  `xml:"Location"`
+	LotSize                             int                     `xml:"LotSize"`
+	MinimumToBid                        Price                   `xml:"MinimumToBid"`
+	PaymentAllowedSites                 []string                `xml:"PaymentAllowedSite"`
+	PaymentMethods                      []string                `xml:"PaymentMethods"`
+	PictureURLs                         []string                `xml:"PictureURL"`
+	PostalCode                          string                  `xml:"PostalCode"`
+	PrimaryCategoryID                   string                  `xml:"PrimaryCategoryID"`
+	PrimaryCategoryIDPath               string                  `xml:"PrimaryCategoryIDPath"`
+	PrimaryCategoryName                 string                  `xml:"PrimaryCategoryName"`
+	ProductID                           string                  `xml:"ProductID"`
+	Quantity                            int                     `xml:"Quantity"`
+	QuantityAvailableHint               string                  `xml:"QuantityAvailableHint"`
+	MinimumRemnantSet                   int                     `xml:"QuantityInfo>MinimumRemnantSet"`
+	QuantitySold                        int                     `xml:"QuantitySold"`
+	QuantitySoldByPickupInStore         int                     `xml:"QuantitySoldByPickupInStore"`
+	QuantityThreshold                   int                     `xml:"QuantityThreshold"`
+	ReturnPolicy                        ReturnPolicy            `xml:"ReturnPolicy"`
+	SecondaryCategoryID                 string                  `xml:"SecondaryCategoryID"`
+	SecondaryCategoryIDPath             string                  `xml:"SecondaryCategoryIDPath"`
+	SecondaryCategoryName               string                  `xml:"SecondaryCategoryName"`
+	Seller                              Seller                  `xml:"Seller"`
+	ShippingCostSummary                 ItemShippingCostSummary `xml:"ShippingCostSummary"`
+	ShipToLocations                     []string                `xml:"ShipToLocations"`
+	Site                                string                  `xml:"Site"`
+	SKU                                 string                  `xml:"SKU"`
+	StartTime                           string                  `xml:"StartTime"`
+	Storefront                          Storefront              `xml:"Storefront"`
+	Subtitle                            string                  `xml:"Subtitle"`
+	TimeLeft                            string                  `xml:"TimeLeft"`
+	Title                               string                  `xml:"Title"`
+	ReserveMet                          bool                    `xml:"ReserveMet"`
+	TopRatedListing                     bool                    `xml:"TopRatedListing"`
+	UnitInfo                            UnitInfo                `xml:"UnitInfo"`
+	Variations                          Variations              `xml:"Variations"`
+	VhrAvailable                        string                  `xml:"VhrAvailable"`
+	VhrUrl                              string                  `xml:"VhrUrl"`
+	ViewItemURLForNaturalSearch         string                  `xml:"ViewItemURLForNaturalSearch"`
+}
+
+// BusinessSellerDetails  is returned if the seller of the item is registered on the eBay listing site as a
+// Business Seller. This container consists of information related to the Business Seller's account.
+// Not all eBay sites support Business Sellers.
+type BusinessSellerDetails struct {
+	AdditionalContactInformation string     `xml:"AdditionalContactInformation"`
+	Address                      Address    `xml:"Address"`
+	Email                        string     `xml:"Email"`
+	Fax                          string     `xml:"Fax"`
+	LegalInvoice                 bool       `xml:"LegalInvoice"`
+	TermsAndConditions           string     `xml:"TermsAndConditions"`
+	TradeRegistrationNumber      string     `xml:"TradeRegistrationNumber"`
+	VATDetails                   VATDetails `xml:"VATDetails"`
+}
+
+// Address is used to provide details about a Business Seller's address.
+type Address struct {
+	CityName        string `xml:"CityName"`
+	CompanyName     string `xml:"CompanyName"`
+	CountryName     string `xml:"CountryName"`
+	FirstName       string `xml:"FirstName"`
+	LastName        string `xml:"LastName"`
+	Name            string `xml:"Name"`
+	Phone           string `xml:"Phone"`
+	PostalCode      string `xml:"PostalCode"`
+	StateOrProvince string `xml:"StateOrProvince"`
+	Street1         string `xml:"Street1"`
+	Street2         string `xml:"Street2"`
+}
+
+// VATDetails provides Value-Added Tax (VAT) details for the Business Seller, including the seller's VAT ID
+// and the VAT percentage rate applicable to the item. VAT is similar to a sales and/or consumption tax,
+// and it is only applicable to sellers selling on European sites.
+type VATDetails struct {
+	BusinessSeller       bool    `xml:"BusinessSeller"`
+	RestrictedToBusiness bool    `xml:"RestrictedToBusiness"`
+	VATID                string  `xml:"VATID"`
+	VATPercent           float64 `xml:"VATPercent"`
+	VATSite              string  `xml:"VATSite"`
+}
+
+// Charity is returned if any percentage of the sales proceeds is going to a nonprofit organization that is
+// registered with eBay for Charity. This container consists of details related to the nonprofit charity
+// organization, including the name, mission, and unique identifier of the charity, as well as the percentage
+// rate of the sale proceeds that will go to the charity for each sale.
+type Charity struct {
+	CharityID       string  `xml:"CharityID"`
+	CharityName     string  `xml:"CharityName"`
+	CharityNumber   int     `xml:"CharityNumber"`
+	DonationPercent float64 `xml:"DonationPercent"`
+	LogoURL         string  `xml:"LogoURL"`
+	Mission         string  `xml:"Mission"`
+	Status          string  `xml:"Status"`
+}
+
+// DiscountPriceInfo provides information for an item that has a Strikethrough Price (STP)
+// or a Minimum Advertised Price (MAP) discount pricing treatment. STP and MAP apply only to fixed-price listings.
+// STP is available on the US, eBay Motors, UK, Germany, Canada (English and French), France,
+// Italy, and Spain sites, while MAP is available only on the US site.
+type DiscountPriceInfo struct {
+	MinimumAdvertisedPrice         Price  `xml:"MinimumAdvertisedPrice"`
+	MinimumAdvertisedPriceExposure string `xml:"MinimumAdvertisedPriceExposure"`
+	OriginalRetailPrice            Price  `xml:"OriginalRetailPrice"`
+	PricingTreatment               string `xml:"PricingTreatment"`
+	SoldOffeBay                    bool   `xml:"SoldOffeBay"`
+	SoldOneBay                     bool   `xml:"SoldOneBay"`
+}
+
+// User ...
+type User struct {
+	BasicUser
+	UserAnonymized bool `xml:"UserAnonymized"`
+}
+
+// ReturnPolicy consists of details related to the seller's Return Policy, both for domestic and international
+// buyers (if the seller ships internationally). If the seller does not accept returns, only the
+// ReturnsAccepted field (or InternationalReturnsAccepted field for international buyers) is
+// returned with a value of ReturnsNotAccepted.
+type ReturnPolicy struct {
+	Description                     string `xml:"Description"`
+	InternationalRefund             string `xml:"InternationalRefund"`
+	InternationalReturnsAccepted    string `xml:"InternationalReturnsAccepted"`
+	InternationalReturnsWithin      string `xml:"InternationalReturnsWithin"`
+	InternationalShippingCostPaidBy string `xml:"InternationalShippingCostPaidBy"`
+	Refund                          string `xml:"Refund"`
+	ReturnsAccepted                 string `xml:"ReturnsAccepted"`
+	ReturnsWithin                   string `xml:"ReturnsWithin"`
+	ShippingCostPaidBy              string `xml:"ShippingCostPaidBy"`
+}
+
+// Seller ...
+type Seller struct {
+	BasicUser
+	TopRatedSeller bool `xml:"TopRatedSeller"`
+}
+
+// ItemShippingCostSummary returns a few details of the lowest-priced shipping service option that is available
+// to the eBay user making the call. For Calculated shipping, the item's location and the destination location
+// are considered when calculating the shipping cost.
+type ItemShippingCostSummary struct {
+	ListedShippingServiceCost float64 `xml:"ListedShippingServiceCost"`
+	LocalPickup               bool    `xml:"LocalPickup"`
+	ShippingServiceCost       float64 `xml:"ShippingServiceCost"`
+	ShippingType              string  `xml:"ShippingType"`
+}
+
+// Storefront consists of the eBay seller's store name and the URL to the eBay store. This container
+// is returned if the seller has an eBay Store subscription and the IncludeSelector field is included in
+// the call request and set to Details.
+type Storefront struct {
+	StoreName string `xml:"StoreName"`
+	StoreURL  string `xml:"StoreURL"`
+}
+
+// UnitInfo contains information about the weight, volume or other quantity measurement of a listed item so
+// buyers can compare per-unit prices. The European Union requires listings for certain types of products
+// to include the price per unit. eBay uses this information and the item's listed price to calculate
+// and display the unit price on eBay EU sites.
+type UnitInfo struct {
+	UnitQuantity float64 `xml:"UnitQuantity"`
+	UnitType     string  `xml:"UnitType"`
+}
+
+// Variations is only returned for multiple-variation listings, and it is required that the user include
+// the IncludeSelector field in the call request, and set its value to Variations.
+type Variations struct {
+	Pictures              Pictures        `xml:"Pictures"`
+	Variations            []Variation     `xml:"Variation"`
+	VariationSpecificsSet []NameValueList `xml:"VariationSpecificsSet"`
+}
+
+// Pictures contains a set of pictures that correspond to one of the variation specifics, such as 'Color'.
+type Pictures struct {
+	VariationSpecificName        string              `xml:"VariationSpecificName"`
+	VariationSpecificPictureSets []VarSpecificPicSet `xml:"VariationSpecificPictureSet"`
+}
+
+// VarSpecificPicSet is returned for each product variation for which there are one or more pictures available,
+// helping buyers distinguish between the different variations in the listing.
+type VarSpecificPicSet struct {
+	PictureURLs            []string `xml:"PictureURL"`
+	VariationSpecificValue string   `xml:"VariationSpecificValue"`
+}
+
+// Variation Contains data that distinguishes one variation from another. For example, if the items vary by
+// color and size, each Variation node specifies a combination of one of those colors and sizes.
+// The quantity and price for each variation is also shown in the Variation container
+type Variation struct {
+	DiscountPriceInfo  DiscountPriceInfo `xml:"DiscountPriceInfo"`
+	ProductID          string            `xml:"ProductID"`
+	Quantity           int               `xml:"Quantity"`
+	SellingStatus      SellingStatus     `xml:"SellingStatus"`
+	SKU                string            `xml:"SKU"`
+	StartPrice         float64           `xml:"StartPrice"`
+	VariationSpecifics []NameValueList   `xml:"VariationSpecifics"`
+}
+
+// SellingStatus shows the quantity sold for the variation, including the quantity that is sold through
+// 'In-Store Pickup' (a logistics option that is only available to a select number of large US sellers
+// with 'brick and mortar' stores). The SellingStatus container is returned for each item variation,
+// even if the quantity sold value is '0'.
+type SellingStatus struct {
+	QuantitySold                int `xml:"QuantitySold"`
+	QuantitySoldByPickupInStore int `xml:"QuantitySoldByPickupInStore"`
 }
 
 /*
@@ -225,14 +468,112 @@ type TaxJurisdiction struct {
 ===========================================================
 */
 
+// GetSingleItemResponse is a response for GetSingleItemRequest
 type GetSingleItemResponse struct {
 	responseStandard
+	Item ItemExtended `xml:"Item"`
+}
+
+// ItemExtended contains details about the listing whose ID was specified in the request.
+type ItemExtended struct {
+	Item
+	ItemCompatibilityCount int             `xml:"ItemCompatibilityCount"`
+	ItemCompatibilityList  []Compatibility `xml:"ItemCompatibilityList"`
+}
+
+// Compatibility is returned for each motor vehicle that is compatible with the motor vehicle part or accessory.
+type Compatibility struct {
+	Empty              xml.Name `xml:"Compatibility"`
+	CompatibilityNotes string   `xml:"CompatibilityNotes"`
+	NameValueLists     []NameValueList
 }
 
 /*
 ===========================================================
 */
 
+// GetUserProfileResponse is a response of GetUserProfileRequest
 type GetUserProfileResponse struct {
 	responseStandard
+	FeedbackDetails []FeedbackDetail `xml:"FeedbackDetails"`
+	FeedbackHistory FeedbackHistory  `xml:"FeedbackHistory"`
+	User            UserProfile      `xml:"User"`
+}
+
+// FeedbackDetail consists of detailed information about one Feedback entry for the specified eBay user.
+type FeedbackDetail struct {
+	CommentingUser      string  `xml:"CommentingUser"`
+	CommentingUserScore int     `xml:"CommentingUserScore"`
+	CommentText         string  `xml:"CommentText"`
+	CommentTime         string  `xml:"CommentTime"`
+	CommentType         string  `xml:"CommentType"`
+	FeedbackID          string  `xml:"FeedbackID"`
+	FeedbackRatingStar  string  `xml:"FeedbackRatingStar"`
+	FeedbackResponse    string  `xml:"FeedbackResponse"`
+	FollowUp            string  `xml:"FollowUp"`
+	ItemID              string  `xml:"ItemID"`
+	ItemPrice           float64 `xml:"ItemPrice"`
+	ItemTitle           string  `xml:"ItemTitle"`
+	Role                string  `xml:"Role"`
+	TransactionID       string  `xml:"TransactionID"`
+	CommentReplaced     bool    `xml:"CommentReplaced"`
+	Countable           bool    `xml:"Countable"`
+	FollowUpReplaced    bool    `xml:"FollowUpReplaced"`
+	ResponseReplaced    bool    `xml:"ResponseReplaced"`
+}
+
+// FeedbackHistory consists of numerous statistical data about the specified eBay user's Feedback history,
+// including counts of Positive, Neutral, and Negative Feedback entries for predefined time periods
+// (last week, last month, last 6 months, and last year). For the FeedbackHistory container to be returned,
+// the user must include the IncludeSelector field in the request and set its value to FeedbackHistory.
+type FeedbackHistory struct {
+	AverageRatingDetails                  []AverageRatingDetail `xml:"AverageRatingDetails"`
+	BidRetractionFeedbackPeriods          []FeedbackPeriod      `xml:"BidRetractionFeedbackPeriods"`
+	NegativeFeedbackPeriods               []FeedbackPeriod      `xml:"NegativeFeedbackPeriods"`
+	NeutralCommentCountFromSuspendedUsers int64                 `xml:"NeutralCommentCountFromSuspendedUsers"`
+	NeutralFeedbackPeriods                []FeedbackPeriod      `xml:"NeutralFeedbackPeriods"`
+	PositiveFeedbackPeriods               []FeedbackPeriod      `xml:"PositiveFeedbackPeriods"`
+	TotalFeedbackPeriods                  []FeedbackPeriod      `xml:"TotalFeedbackPeriods"`
+	UniqueNegativeFeedbackCount           int64                 `xml:"UniqueNegativeFeedbackCount"`
+	UniqueNeutralFeedbackCount            int64                 `xml:"UniqueNeutralFeedbackCount"`
+	UniquePositiveFeedbackCount           int64                 `xml:"UniquePositiveFeedbackCount"`
+}
+
+// AverageRatingDetail shows the seller's current rating for the Detailed Seller Rating type (specified in the
+// RatingDetail field), as well as the total count that this seller has been rated for
+// this particular Detailed Seller Rating type.
+type AverageRatingDetail struct {
+	Rating       float64 `xml:"Rating"`
+	RatingCount  int64   `xml:"RatingCount"`
+	RatingDetail string  `xml:"RatingDetail"`
+}
+
+// FeedbackPeriod shows the cumulative number of all Feedback entries (shown in Count field) for the specified
+// time period (shown in PeriodInDays field).
+type FeedbackPeriod struct {
+	Count        int64 `xml:"Count"`
+	PeriodInDays int   `xml:"PeriodInDays"`
+}
+
+// UserProfile consists of various details about the eBay user, including Feedback rating, Seller Level,
+// link to profile page, and other information. This container is always returned, but more fields will be returned
+// under this container if the user includes the IncludeSelector field in the request and sets its value to Details.
+type UserProfile struct {
+	BasicUser
+	AboutMeURL          string `xml:"AboutMeURL"`
+	FeedbackDetailsURL  bool   `xml:"FeedbackDetailsURL"`
+	MyWorldLargeImage   string `xml:"MyWorldLargeImage"`
+	MyWorldSmallImage   string `xml:"MyWorldSmallImage"`
+	MyWorldURL          string `xml:"MyWorldURL"`
+	NewUser             bool   `xml:"NewUser"`
+	RegistrationDate    string `xml:"RegistrationDate"`
+	RegistrationSite    string `xml:"RegistrationSite"`
+	ReviewsAndGuidesURL string `xml:"ReviewsAndGuidesURL"`
+	SellerBusinessType  string `xml:"SellerBusinessType"`
+	SellerItemsURL      string `xml:"SellerItemsURL"`
+	SellerLevel         string `xml:"SellerLevel"`
+	Status              string `xml:"Status"`
+	StoreName           string `xml:"StoreName"`
+	StoreURL            string `xml:"StoreURL"`
+	TopRatedSeller      bool   `xml:"TopRatedSeller"`
 }
