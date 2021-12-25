@@ -1,7 +1,5 @@
 package shopping
 
-import "encoding/xml"
-
 // FindProductsResponse is response for FindProductsRequest
 type FindProductsResponse struct {
 	responseStandard
@@ -21,7 +19,7 @@ type Product struct {
 	DetailsURL         string          `xml:"DetailsURL"`
 	DisplayStockPhotos bool            `xml:"DisplayStockPhotos"`
 	DomainName         string          `xml:"DomainName"`
-	ItemSpecifics      []NameValueList `xml:"ItemSpecifics"`
+	ItemSpecifics      []NameValueList `xml:"ItemSpecifics>NameValueList"`
 	ProductIDs         []ProductID     `xml:"ProductID"`
 	ProductState       string          `xml:"ProductState"`
 	ReviewCount        int             `xml:"ReviewCount"`
@@ -33,7 +31,6 @@ type Product struct {
 // or StatusItem Specifics name-value pairs for a single-variation listing or individual variation within
 // a multiple-variation listing (if GetSingleItem or GetMultipleItems is used).
 type NameValueList struct {
-	Empty  xml.Name `xml:"NameValueList"`
 	Name   string   `xml:"Name"`
 	Values []string `xml:"Value"`
 }
@@ -151,7 +148,7 @@ type Item struct {
 	HighBidder                          User                    `xml:"HighBidder"`
 	HitCount                            int64                   `xml:"HitCount"`
 	ItemID                              string                  `xml:"ItemID"`
-	ItemSpecifics                       []NameValueList         `xml:"ItemSpecifics"`
+	ItemSpecifics                       []NameValueList         `xml:"ItemSpecifics>NameValueList"`
 	ListingStatus                       string                  `xml:"ListingStatus"`
 	ListingType                         string                  `xml:"ListingType"`
 	Location                            string                  `xml:"Location"`
@@ -321,7 +318,7 @@ type UnitInfo struct {
 type Variations struct {
 	Pictures              Pictures        `xml:"Pictures"`
 	Variations            []Variation     `xml:"Variation"`
-	VariationSpecificsSet []NameValueList `xml:"VariationSpecificsSet"`
+	VariationSpecificsSet []NameValueList `xml:"VariationSpecificsSet>NameValueList"`
 }
 
 // Pictures contains a set of pictures that correspond to one of the variation specifics, such as 'Color'.
@@ -347,7 +344,7 @@ type Variation struct {
 	SellingStatus      SellingStatus     `xml:"SellingStatus"`
 	SKU                string            `xml:"SKU"`
 	StartPrice         float64           `xml:"StartPrice"`
-	VariationSpecifics []NameValueList   `xml:"VariationSpecifics"`
+	VariationSpecifics []NameValueList   `xml:"VariationSpecifics>NameValueList"`
 }
 
 // SellingStatus shows the quantity sold for the variation, including the quantity that is sold through
@@ -402,7 +399,7 @@ type ShippingDetails struct {
 	SalesTax                            SalesTax                `xml:"SalesTax"`
 	ShippingRateErrorMessage            string                  `xml:"ShippingRateErrorMessage"`
 	ShippingServiceOptions              []ShippingServiceOption `xml:"ShippingServiceOption"`
-	TaxTable                            TaxTable                `xml:"TaxTable"`
+	TaxTable                            []TaxJurisdiction       `xml:"TaxTable>TaxJurisdiction"`
 }
 
 // IntShipServiceOption consists of detailed information for an international shipping service option that is
@@ -478,13 +475,12 @@ type GetSingleItemResponse struct {
 type ItemExtended struct {
 	Item
 	ItemCompatibilityCount int             `xml:"ItemCompatibilityCount"`
-	ItemCompatibilityList  []Compatibility `xml:"ItemCompatibilityList"`
+	ItemCompatibilityList  []Compatibility `xml:"ItemCompatibilityList>Compatibility"`
 }
 
 // Compatibility is returned for each motor vehicle that is compatible with the motor vehicle part or accessory.
 type Compatibility struct {
-	Empty              xml.Name `xml:"Compatibility"`
-	CompatibilityNotes string   `xml:"CompatibilityNotes"`
+	CompatibilityNotes string `xml:"CompatibilityNotes"`
 	NameValueLists     []NameValueList
 }
 

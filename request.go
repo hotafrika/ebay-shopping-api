@@ -191,7 +191,7 @@ func (r *FindProductsRequest) Execute() (FindProductsResponse, error) {
 	return r.GetPage(1)
 }
 
-// GetBody return FindProductsRequest body as JSON
+// GetBody return FindProductsRequest body as XML
 func (r *FindProductsRequest) GetBody() ([]byte, error) {
 	return xml.MarshalIndent(r, "", "  ")
 }
@@ -249,12 +249,63 @@ func (r *GetCategoryInfoRequest) WithIncludeSelector(selectors ...IncludeSelecto
 	return r
 }
 
+// Execute executes GetCategoryInfoRequest
+func (r *GetCategoryInfoRequest) Execute() (GetCategoryInfoResponse, error) {
+	body, err := r.getBody()
+	if err != nil {
+		return GetCategoryInfoResponse{}, fmt.Errorf("unable to serialize req body: %w", err)
+	}
+	// TODO check content type
+	res, err := r.Client.R().SetBody(body).Post(r.URL)
+	if err != nil {
+		return GetCategoryInfoResponse{}, fmt.Errorf("sending req: %w", err)
+	}
+	if res.StatusCode() != 200 {
+		return GetCategoryInfoResponse{}, fmt.Errorf("status code %d: %s", res.StatusCode(), res.String())
+	}
+	ar := GetCategoryInfoResponse{}
+	err = xml.Unmarshal(res.Body(), &ar)
+	fmt.Println(string(res.Body()))
+	if err != nil {
+		return GetCategoryInfoResponse{}, fmt.Errorf("parsing response body: %w", err)
+	}
+	return ar, nil
+}
+
+// GetBody return GetCategoryInfoRequest body as XML
+func (r *GetCategoryInfoRequest) GetBody() ([]byte, error) {
+	return xml.MarshalIndent(r, "", "  ")
+}
+
+func (r *GetCategoryInfoRequest) getBody() ([]byte, error) {
+	return xml.Marshal(r)
+}
+
 /*
 ===================================================
 */
 
 type GeteBayTimeRequest struct {
 	RequestBasic
+}
+
+// Execute executes GeteBayTimeRequest
+func (r *GeteBayTimeRequest) Execute() (GeteBayTimeResponse, error) {
+	// TODO check content type
+	res, err := r.Client.R().Post(r.URL)
+	if err != nil {
+		return GeteBayTimeResponse{}, fmt.Errorf("sending req: %w", err)
+	}
+	if res.StatusCode() != 200 {
+		return GeteBayTimeResponse{}, fmt.Errorf("status code %d: %s", res.StatusCode(), res.String())
+	}
+	ar := GeteBayTimeResponse{}
+	err = xml.Unmarshal(res.Body(), &ar)
+	fmt.Println(string(res.Body()))
+	if err != nil {
+		return GeteBayTimeResponse{}, fmt.Errorf("parsing response body: %w", err)
+	}
+	return ar, nil
 }
 
 /*
@@ -326,6 +377,38 @@ func (r *GetMultipleItemsRequest) WithItemID(itemIDs ...string) *GetMultipleItem
 	return r
 }
 
+// Execute executes GetMultipleItemsRequest
+func (r *GetMultipleItemsRequest) Execute() (GetMultipleItemsResponse, error) {
+	body, err := r.getBody()
+	if err != nil {
+		return GetMultipleItemsResponse{}, fmt.Errorf("unable to serialize req body: %w", err)
+	}
+	// TODO check content type
+	res, err := r.Client.R().SetBody(body).Post(r.URL)
+	if err != nil {
+		return GetMultipleItemsResponse{}, fmt.Errorf("sending req: %w", err)
+	}
+	if res.StatusCode() != 200 {
+		return GetMultipleItemsResponse{}, fmt.Errorf("status code %d: %s", res.StatusCode(), res.String())
+	}
+	ar := GetMultipleItemsResponse{}
+	err = xml.Unmarshal(res.Body(), &ar)
+	fmt.Println(string(res.Body()))
+	if err != nil {
+		return GetMultipleItemsResponse{}, fmt.Errorf("parsing response body: %w", err)
+	}
+	return ar, nil
+}
+
+// GetBody return GetMultipleItemsRequest body as XML
+func (r *GetMultipleItemsRequest) GetBody() ([]byte, error) {
+	return xml.MarshalIndent(r, "", "  ")
+}
+
+func (r *GetMultipleItemsRequest) getBody() ([]byte, error) {
+	return xml.Marshal(r)
+}
+
 /*
 ===================================================
 */
@@ -380,6 +463,38 @@ func (r *GetShippingCostsRequest) WithQuantitySold(sold int) *GetShippingCostsRe
 	return r
 }
 
+// Execute executes GetShippingCostsRequest
+func (r *GetShippingCostsRequest) Execute() (GetShippingCostsResponse, error) {
+	body, err := r.getBody()
+	if err != nil {
+		return GetShippingCostsResponse{}, fmt.Errorf("unable to serialize req body: %w", err)
+	}
+	// TODO check content type
+	res, err := r.Client.R().SetBody(body).Post(r.URL)
+	if err != nil {
+		return GetShippingCostsResponse{}, fmt.Errorf("sending req: %w", err)
+	}
+	if res.StatusCode() != 200 {
+		return GetShippingCostsResponse{}, fmt.Errorf("status code %d: %s", res.StatusCode(), res.String())
+	}
+	ar := GetShippingCostsResponse{}
+	err = xml.Unmarshal(res.Body(), &ar)
+	fmt.Println(string(res.Body()))
+	if err != nil {
+		return GetShippingCostsResponse{}, fmt.Errorf("parsing response body: %w", err)
+	}
+	return ar, nil
+}
+
+// GetBody return GetShippingCostsRequest body as XML
+func (r *GetShippingCostsRequest) GetBody() ([]byte, error) {
+	return xml.MarshalIndent(r, "", "  ")
+}
+
+func (r *GetShippingCostsRequest) getBody() ([]byte, error) {
+	return xml.Marshal(r)
+}
+
 /*
 ===================================================
 */
@@ -393,14 +508,13 @@ type GetSingleItemRequest struct {
 	IncludeSelectorMap map[string]struct{} `xml:"-"`
 	ItemID             string              `xml:"ItemID"`
 	VariationSKU       string              `xml:"VariationSKU,omitempty"`
-	VariationSpecifics []NameValueListType `xml:"VariationSpecifics,omitempty"`
+	VariationSpecifics []NameValueListType `xml:"VariationSpecifics>NameValueList,omitempty"`
 }
 
 // NameValueListType  is an array of StatusItem Specifics name-value pairs for an eBay Catalog product
 // (if FindProducts is used) or StatusItem Specifics name-value pairs for a single-variation listing or individual
 // variation within a multiple-variation listing (if GetSingleItem or GetMultipleItems is used).
 type NameValueListType struct {
-	Empty  xml.Name `xml:"NameValueList"`
 	Name   string   `xml:"Name,omitempty"`
 	Values []string `xml:"Value,omitempty"`
 }
@@ -448,6 +562,38 @@ func (r *GetSingleItemRequest) WithVariationSpecifics(name string, values ...str
 	return r
 }
 
+// Execute executes GetSingleItemRequest
+func (r *GetSingleItemRequest) Execute() (GetSingleItemResponse, error) {
+	body, err := r.getBody()
+	if err != nil {
+		return GetSingleItemResponse{}, fmt.Errorf("unable to serialize req body: %w", err)
+	}
+	// TODO check content type
+	res, err := r.Client.R().SetBody(body).Post(r.URL)
+	if err != nil {
+		return GetSingleItemResponse{}, fmt.Errorf("sending req: %w", err)
+	}
+	if res.StatusCode() != 200 {
+		return GetSingleItemResponse{}, fmt.Errorf("status code %d: %s", res.StatusCode(), res.String())
+	}
+	ar := GetSingleItemResponse{}
+	err = xml.Unmarshal(res.Body(), &ar)
+	fmt.Println(string(res.Body()))
+	if err != nil {
+		return GetSingleItemResponse{}, fmt.Errorf("parsing response body: %w", err)
+	}
+	return ar, nil
+}
+
+// GetBody return GetSingleItemRequest body as XML
+func (r *GetSingleItemRequest) GetBody() ([]byte, error) {
+	return xml.MarshalIndent(r, "", "  ")
+}
+
+func (r *GetSingleItemRequest) getBody() ([]byte, error) {
+	return xml.Marshal(r)
+}
+
 /*
 ===================================================
 */
@@ -481,4 +627,36 @@ func (r *GetUserProfileRequest) WithIncludeSelector(selectors ...IncludeSelector
 func (r *GetUserProfileRequest) WithUserID(userID string) *GetUserProfileRequest {
 	r.UserID = userID
 	return r
+}
+
+// Execute executes GetUserProfileRequest
+func (r *GetUserProfileRequest) Execute() (GetUserProfileResponse, error) {
+	body, err := r.getBody()
+	if err != nil {
+		return GetUserProfileResponse{}, fmt.Errorf("unable to serialize req body: %w", err)
+	}
+	// TODO check content type
+	res, err := r.Client.R().SetBody(body).Post(r.URL)
+	if err != nil {
+		return GetUserProfileResponse{}, fmt.Errorf("sending req: %w", err)
+	}
+	if res.StatusCode() != 200 {
+		return GetUserProfileResponse{}, fmt.Errorf("status code %d: %s", res.StatusCode(), res.String())
+	}
+	ar := GetUserProfileResponse{}
+	err = xml.Unmarshal(res.Body(), &ar)
+	fmt.Println(string(res.Body()))
+	if err != nil {
+		return GetUserProfileResponse{}, fmt.Errorf("parsing response body: %w", err)
+	}
+	return ar, nil
+}
+
+// GetBody return GetUserProfileRequest body as XML
+func (r *GetUserProfileRequest) GetBody() ([]byte, error) {
+	return xml.MarshalIndent(r, "", "  ")
+}
+
+func (r *GetUserProfileRequest) getBody() ([]byte, error) {
+	return xml.Marshal(r)
 }
