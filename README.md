@@ -1,3 +1,5 @@
+![example workflow](https://github.com/hotafrika/ebay-shopping-api/actions/workflows/autotests.yml/badge.svg)
+
 # ebay-shopping-api
 Golang client for eBay Shopping API
 
