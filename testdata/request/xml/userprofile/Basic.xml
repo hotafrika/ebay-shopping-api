@@ -1,0 +1,3 @@
+<GetUserProfileRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+    <UserID>h***************r</UserID>
+</GetUserProfileRequest>

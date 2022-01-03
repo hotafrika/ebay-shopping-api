@@ -1,0 +1,7 @@
+<GetItemStatusRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+    <ItemID>1**********1</ItemID>
+    <ItemID>2**********9</ItemID>
+    <ItemID>3**********4</ItemID>
+    <ItemID>3**********5</ItemID>
+    <ItemID>3**********7</ItemID>
+</GetItemStatusRequest>
