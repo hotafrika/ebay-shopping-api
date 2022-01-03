@@ -1,0 +1,5 @@
+<GetMultipleItemsRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+    <ItemID>1**********7</ItemID>
+    <ItemID>2**********0</ItemID>
+    <ItemID>9********3</ItemID>
+</GetMultipleItemsRequest>

@@ -1,0 +1,3 @@
+<GetSingleItemRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+    <ItemID>1**********1</ItemID>
+</GetSingleItemRequest>

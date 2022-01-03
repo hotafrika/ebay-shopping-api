@@ -1,0 +1,4 @@
+<GetCategoryInfoRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+    <CategoryID>-1</CategoryID>
+    <IncludeSelector>ChildCategories</IncludeSelector>
+</GetCategoryInfoRequest>

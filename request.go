@@ -10,17 +10,18 @@ import (
 //
 // See more: https://developer.ebay.com/Devzone/shopping/docs/CallRef/FindProducts.html#Input
 type FindProductsRequest struct {
+	XMLName xml.Name `xml:"urn:ebay:apis:eBLBaseComponents FindProductsRequest"`
 	RequestBasic
 	RequestStandard
 	CategoryID string `xml:"CategoryID,omitempty"`
 	//DomainNames []string `xml:"DomainName"` 					// is not recommended for use
 	//IncludeSelector string `xml:"IncludeSelector,omitempty"` 	// deprecated
-	MaxEntries    int       `xml:"MaxEntries,omitempty"`
-	PageNumber    int       `xml:"PageNumber,omitempty"`
-	ProductID     ProductID `xml:"ProductID,omitempty"`
-	ProductSort   string    `xml:"ProductSort,omitempty"`
-	QueryKeywords string    `xml:"QueryKeywords,omitempty"`
-	SortOrder     string    `xml:"SortOrder,omitempty"`
+	MaxEntries    int        `xml:"MaxEntries,omitempty"`
+	PageNumber    int        `xml:"PageNumber,omitempty"`
+	ProductID     *ProductID `xml:"ProductID,omitempty"`
+	ProductSort   string     `xml:"ProductSort,omitempty"`
+	QueryKeywords string     `xml:"QueryKeywords,omitempty"`
+	SortOrder     string     `xml:"SortOrder,omitempty"`
 }
 
 // WithCategoryID adds categoryID to FindProductsRequest
@@ -102,8 +103,10 @@ type ProductID struct {
 // The product identifier is expressed as a string value, and the type of product identifier
 // is expressed in the type attribute.
 func (r *FindProductsRequest) WithProductID(productIDCodeType ProductIDCodeTypeOption, productID string) *FindProductsRequest {
-	r.ProductID.ProductIDCodeType = string(productIDCodeType)
-	r.ProductID.ProductIDType = productID
+	r.ProductID = &ProductID{
+		ProductIDCodeType: string(productIDCodeType),
+		ProductIDType:     productID,
+	}
 	return r
 }
 
@@ -209,6 +212,7 @@ func (r *FindProductsRequest) getBody() ([]byte, error) {
 //
 // See more: https://developer.ebay.com/Devzone/shopping/docs/CallRef/GetCategoryInfo.html#Input
 type GetCategoryInfoRequest struct {
+	XMLName xml.Name `xml:"urn:ebay:apis:eBLBaseComponents GetCategoryInfoRequest"`
 	RequestBasic
 	RequestStandard
 	CategoryID         string              `xml:"CategoryID,omitempty"`
@@ -286,6 +290,7 @@ func (r *GetCategoryInfoRequest) getBody() ([]byte, error) {
 */
 
 type GeteBayTimeRequest struct {
+	XMLName xml.Name `xml:"urn:ebay:apis:eBLBaseComponents GeteBayTimeRequest"`
 	RequestBasic
 }
 
@@ -308,6 +313,11 @@ func (r *GeteBayTimeRequest) Execute() (GeteBayTimeResponse, error) {
 	return ar, nil
 }
 
+// GetBody return GeteBayTimeRequest body as XML
+func (r *GeteBayTimeRequest) GetBody() ([]byte, error) {
+	return xml.MarshalIndent(r, "", "  ")
+}
+
 /*
 ===================================================
 */
@@ -316,6 +326,7 @@ func (r *GeteBayTimeRequest) Execute() (GeteBayTimeResponse, error) {
 // All retrieved listings will show listing status, fixed price (or highest bid price for auctions),
 // and scheduled end time of listing.
 type GetItemStatusRequest struct {
+	XMLName xml.Name `xml:"urn:ebay:apis:eBLBaseComponents GetItemStatusRequest"`
 	RequestBasic
 	ItemIDMap map[string]struct{} `xml:"-"`
 	ItemIDs   []string            `xml:"ItemID,omitempty"`
@@ -339,6 +350,38 @@ func (r *GetItemStatusRequest) WithItemID(itemIDs ...string) *GetItemStatusReque
 	return r
 }
 
+// Execute executes GetItemStatusRequest
+func (r *GetItemStatusRequest) Execute() (GetItemStatusResponse, error) {
+	body, err := r.getBody()
+	if err != nil {
+		return GetItemStatusResponse{}, fmt.Errorf("unable to serialize req body: %w", err)
+	}
+	// TODO check content type
+	res, err := r.Client.R().SetBody(body).Post(r.URL)
+	if err != nil {
+		return GetItemStatusResponse{}, fmt.Errorf("sending req: %w", err)
+	}
+	if res.StatusCode() != 200 {
+		return GetItemStatusResponse{}, fmt.Errorf("status code %d: %s", res.StatusCode(), res.String())
+	}
+	ar := GetItemStatusResponse{}
+	err = xml.Unmarshal(res.Body(), &ar)
+	fmt.Println(string(res.Body()))
+	if err != nil {
+		return GetItemStatusResponse{}, fmt.Errorf("parsing response body: %w", err)
+	}
+	return ar, nil
+}
+
+// GetBody return GetItemStatusRequest body as XML
+func (r *GetItemStatusRequest) GetBody() ([]byte, error) {
+	return xml.MarshalIndent(r, "", "  ")
+}
+
+func (r *GetItemStatusRequest) getBody() ([]byte, error) {
+	return xml.Marshal(r)
+}
+
 /*
 ===================================================
 */
@@ -346,6 +389,7 @@ func (r *GetItemStatusRequest) WithItemID(itemIDs ...string) *GetItemStatusReque
 // GetMultipleItemsRequest retrieve much of the information that is visible on a listing's
 // View StatusItem page on the eBay site, such as title and prices.
 type GetMultipleItemsRequest struct {
+	XMLName xml.Name `xml:"urn:ebay:apis:eBLBaseComponents GetMultipleItemsRequest"`
 	RequestBasic
 	IncludeSelectorMap map[string]struct{} `xml:"-"`
 	IncludeSelector    string              `xml:"IncludeSelector,omitempty"`
@@ -418,6 +462,7 @@ func (r *GetMultipleItemsRequest) getBody() ([]byte, error) {
 // listing (does not have to be the seller or buyer/bidder).
 // It pertains to all shipping types, including flat-rate and calculated.
 type GetShippingCostsRequest struct {
+	XMLName xml.Name `xml:"urn:ebay:apis:eBLBaseComponents GetShippingCostsRequest"`
 	RequestBasic
 	// DestinationCountryCode from https://developer.ebay.com/Devzone/shopping/docs/CallRef/types/CountryCodeType.html
 	DestinationCountryCode string `xml:"DestinationCountryCode,omitempty"`
@@ -503,12 +548,17 @@ func (r *GetShippingCostsRequest) getBody() ([]byte, error) {
 // This gives you most of the data that eBay shows to the general public on the
 // View StatusItem page (title, description, basic price information, and other details).
 type GetSingleItemRequest struct {
+	XMLName xml.Name `xml:"urn:ebay:apis:eBLBaseComponents GetSingleItemRequest"`
 	RequestBasic
 	IncludeSelector    string              `xml:"IncludeSelector,omitempty"`
 	IncludeSelectorMap map[string]struct{} `xml:"-"`
 	ItemID             string              `xml:"ItemID"`
 	VariationSKU       string              `xml:"VariationSKU,omitempty"`
-	VariationSpecifics []NameValueListType `xml:"VariationSpecifics>NameValueList,omitempty"`
+	VariationSpecifics *VariationSpecifics `xml:"VariationSpecifics,omitempty"`
+}
+
+type VariationSpecifics struct {
+	NameValueList []NameValueListType `xml:"NameValueList,omitempty"`
 }
 
 // NameValueListType  is an array of StatusItem Specifics name-value pairs for an eBay Catalog product
@@ -555,7 +605,10 @@ func (r *GetSingleItemRequest) WithVariationSKU(variationSKU string) *GetSingleI
 
 // WithVariationSpecifics adds additional StatusItem Specific name-value pairs
 func (r *GetSingleItemRequest) WithVariationSpecifics(name string, values ...string) *GetSingleItemRequest {
-	r.VariationSpecifics = append(r.VariationSpecifics, NameValueListType{
+	if r.VariationSpecifics == nil {
+		r.VariationSpecifics = &VariationSpecifics{}
+	}
+	r.VariationSpecifics.NameValueList = append(r.VariationSpecifics.NameValueList, NameValueListType{
 		Name:   name,
 		Values: values,
 	})
@@ -600,6 +653,7 @@ func (r *GetSingleItemRequest) getBody() ([]byte, error) {
 
 // GetUserProfileRequest ...
 type GetUserProfileRequest struct {
+	XMLName xml.Name `xml:"urn:ebay:apis:eBLBaseComponents GetUserProfileRequest"`
 	RequestBasic
 	IncludeSelector    string              `xml:"IncludeSelector,omitempty"`
 	IncludeSelectorMap map[string]struct{} `xml:"-"`
