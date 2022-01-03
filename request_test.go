@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os"
 	"path"
+	"sort"
 	"testing"
 )
 
@@ -229,6 +230,12 @@ func TestGetItemStatusRequest_GetBody(t *testing.T) {
 				return
 			}
 
+			sort.Slice(req1.ItemIDs, func(i, j int) bool {
+				return req1.ItemIDs[i] > req1.ItemIDs[j]
+			})
+			sort.Slice(req2.ItemIDs, func(i, j int) bool {
+				return req2.ItemIDs[i] > req2.ItemIDs[j]
+			})
 			//fmt.Println(string(got))
 			assert.Equal(t, req1.RequestBasic, req2.RequestBasic)
 			assert.EqualValues(t, req1.ItemIDs, req2.ItemIDs)
@@ -283,6 +290,12 @@ func TestGetMultipleItemsRequest_GetBody(t *testing.T) {
 				return
 			}
 
+			sort.Slice(req1.ItemIDs, func(i, j int) bool {
+				return req1.ItemIDs[i] > req1.ItemIDs[j]
+			})
+			sort.Slice(req2.ItemIDs, func(i, j int) bool {
+				return req2.ItemIDs[i] > req2.ItemIDs[j]
+			})
 			//fmt.Println(string(got))
 			assert.Equal(t, req1.RequestBasic, req2.RequestBasic)
 			assert.EqualValues(t, req1.ItemIDs, req2.ItemIDs)
