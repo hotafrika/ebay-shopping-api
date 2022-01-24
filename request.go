@@ -196,11 +196,19 @@ func (r *FindProductsRequest) Execute() (FindProductsResponse, error) {
 
 // GetBody return FindProductsRequest body as XML
 func (r *FindProductsRequest) GetBody() ([]byte, error) {
-	return xml.MarshalIndent(r, "", "  ")
+	b, err := xml.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 func (r *FindProductsRequest) getBody() ([]byte, error) {
-	return xml.Marshal(r)
+	b, err := xml.Marshal(r)
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 /*
@@ -278,11 +286,19 @@ func (r *GetCategoryInfoRequest) Execute() (GetCategoryInfoResponse, error) {
 
 // GetBody return GetCategoryInfoRequest body as XML
 func (r *GetCategoryInfoRequest) GetBody() ([]byte, error) {
-	return xml.MarshalIndent(r, "", "  ")
+	b, err := xml.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 func (r *GetCategoryInfoRequest) getBody() ([]byte, error) {
-	return xml.Marshal(r)
+	b, err := xml.Marshal(r)
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 /*
@@ -315,7 +331,11 @@ func (r *GeteBayTimeRequest) Execute() (GeteBayTimeResponse, error) {
 
 // GetBody return GeteBayTimeRequest body as XML
 func (r *GeteBayTimeRequest) GetBody() ([]byte, error) {
-	return xml.MarshalIndent(r, "", "  ")
+	b, err := xml.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 /*
@@ -375,11 +395,19 @@ func (r *GetItemStatusRequest) Execute() (GetItemStatusResponse, error) {
 
 // GetBody return GetItemStatusRequest body as XML
 func (r *GetItemStatusRequest) GetBody() ([]byte, error) {
-	return xml.MarshalIndent(r, "", "  ")
+	b, err := xml.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 func (r *GetItemStatusRequest) getBody() ([]byte, error) {
-	return xml.Marshal(r)
+	b, err := xml.Marshal(r)
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 /*
@@ -446,11 +474,19 @@ func (r *GetMultipleItemsRequest) Execute() (GetMultipleItemsResponse, error) {
 
 // GetBody return GetMultipleItemsRequest body as XML
 func (r *GetMultipleItemsRequest) GetBody() ([]byte, error) {
-	return xml.MarshalIndent(r, "", "  ")
+	b, err := xml.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 func (r *GetMultipleItemsRequest) getBody() ([]byte, error) {
-	return xml.Marshal(r)
+	b, err := xml.Marshal(r)
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 /*
@@ -533,11 +569,19 @@ func (r *GetShippingCostsRequest) Execute() (GetShippingCostsResponse, error) {
 
 // GetBody return GetShippingCostsRequest body as XML
 func (r *GetShippingCostsRequest) GetBody() ([]byte, error) {
-	return xml.MarshalIndent(r, "", "  ")
+	b, err := xml.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 func (r *GetShippingCostsRequest) getBody() ([]byte, error) {
-	return xml.Marshal(r)
+	b, err := xml.Marshal(r)
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 /*
@@ -640,11 +684,19 @@ func (r *GetSingleItemRequest) Execute() (GetSingleItemResponse, error) {
 
 // GetBody return GetSingleItemRequest body as XML
 func (r *GetSingleItemRequest) GetBody() ([]byte, error) {
-	return xml.MarshalIndent(r, "", "  ")
+	b, err := xml.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 func (r *GetSingleItemRequest) getBody() ([]byte, error) {
-	return xml.Marshal(r)
+	b, err := xml.Marshal(r)
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 /*
@@ -708,9 +760,17 @@ func (r *GetUserProfileRequest) Execute() (GetUserProfileResponse, error) {
 
 // GetBody return GetUserProfileRequest body as XML
 func (r *GetUserProfileRequest) GetBody() ([]byte, error) {
-	return xml.MarshalIndent(r, "", "  ")
+	b, err := xml.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
 
 func (r *GetUserProfileRequest) getBody() ([]byte, error) {
-	return xml.Marshal(r)
+	b, err := xml.Marshal(r)
+	if err != nil {
+		return b, err
+	}
+	return append([]byte(xml.Header), b...), err
 }
