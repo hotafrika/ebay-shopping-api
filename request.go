@@ -449,6 +449,15 @@ func (r *GetMultipleItemsRequest) WithItemID(itemIDs ...string) *GetMultipleItem
 	return r
 }
 
+// WithItemIDs replaces items IDs in request
+// The uniqe ID that identifies the listing for which to retrieve the data.
+// You can provide a maximum of 20 ItemID values.
+// Max length: 19 (Note: The eBay database specifies 38. Currently, StatusItem IDs are usually 9 to 12 digits).
+func (r *GetMultipleItemsRequest) WithItemIDs(itemIDs ...string) *GetMultipleItemsRequest {
+	r.ItemIDs = itemIDs
+	return r
+}
+
 // Execute executes GetMultipleItemsRequest
 func (r *GetMultipleItemsRequest) Execute() (GetMultipleItemsResponse, error) {
 	body, err := r.getBody()
