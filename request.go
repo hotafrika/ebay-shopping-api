@@ -182,7 +182,6 @@ func (r *FindProductsRequest) GetPage(page int) (FindProductsResponse, error) {
 	}
 	ar := FindProductsResponse{}
 	err = xml.Unmarshal(res.Body(), &ar)
-	fmt.Println(string(res.Body()))
 	if err != nil {
 		return FindProductsResponse{}, fmt.Errorf("parsing response body: %w", err)
 	}
@@ -277,7 +276,6 @@ func (r *GetCategoryInfoRequest) Execute() (GetCategoryInfoResponse, error) {
 	}
 	ar := GetCategoryInfoResponse{}
 	err = xml.Unmarshal(res.Body(), &ar)
-	fmt.Println(string(res.Body()))
 	if err != nil {
 		return GetCategoryInfoResponse{}, fmt.Errorf("parsing response body: %w", err)
 	}
@@ -322,7 +320,6 @@ func (r *GeteBayTimeRequest) Execute() (GeteBayTimeResponse, error) {
 	}
 	ar := GeteBayTimeResponse{}
 	err = xml.Unmarshal(res.Body(), &ar)
-	fmt.Println(string(res.Body()))
 	if err != nil {
 		return GeteBayTimeResponse{}, fmt.Errorf("parsing response body: %w", err)
 	}
@@ -386,7 +383,6 @@ func (r *GetItemStatusRequest) Execute() (GetItemStatusResponse, error) {
 	}
 	ar := GetItemStatusResponse{}
 	err = xml.Unmarshal(res.Body(), &ar)
-	fmt.Println(string(res.Body()))
 	if err != nil {
 		return GetItemStatusResponse{}, fmt.Errorf("parsing response body: %w", err)
 	}
@@ -474,7 +470,6 @@ func (r *GetMultipleItemsRequest) Execute() (GetMultipleItemsResponse, error) {
 	}
 	ar := GetMultipleItemsResponse{}
 	err = xml.Unmarshal(res.Body(), &ar)
-	fmt.Println(string(res.Body()))
 	if err != nil {
 		return GetMultipleItemsResponse{}, fmt.Errorf("parsing response body: %w", err)
 	}
@@ -569,7 +564,6 @@ func (r *GetShippingCostsRequest) Execute() (GetShippingCostsResponse, error) {
 	}
 	ar := GetShippingCostsResponse{}
 	err = xml.Unmarshal(res.Body(), &ar)
-	fmt.Println(string(res.Body()))
 	if err != nil {
 		return GetShippingCostsResponse{}, fmt.Errorf("parsing response body: %w", err)
 	}
@@ -684,7 +678,6 @@ func (r *GetSingleItemRequest) Execute() (GetSingleItemResponse, error) {
 	}
 	ar := GetSingleItemResponse{}
 	err = xml.Unmarshal(res.Body(), &ar)
-	fmt.Println(string(res.Body()))
 	if err != nil {
 		return GetSingleItemResponse{}, fmt.Errorf("parsing response body: %w", err)
 	}
@@ -760,7 +753,6 @@ func (r *GetUserProfileRequest) Execute() (GetUserProfileResponse, error) {
 	}
 	ar := GetUserProfileResponse{}
 	err = xml.Unmarshal(res.Body(), &ar)
-	fmt.Println(string(res.Body()))
 	if err != nil {
 		return GetUserProfileResponse{}, fmt.Errorf("parsing response body: %w", err)
 	}
